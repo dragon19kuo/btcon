@@ -28,13 +28,11 @@ public class BtconActivity extends Activity {
     private static final UUID HID_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     
     private final String SD_PATH = android.os.Environment.getExternalStorageDirectory().getAbsolutePath();
+    static final String filepath = "file:///sdcard/cmd.txt";
     private static final String prdName="8XX";
     BluetoothAdapter btAdapt;
     public static BluetoothSocket btSocket;
     BluetoothDevice btDev;
-    
-    
-    
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -42,7 +40,7 @@ public class BtconActivity extends Activity {
         setContentView(R.layout.main);
         BtInit();
         Search("JK-SNB");
-        chkConnection(btDev);
+  //      chkConnection(btDev);
         SendCmd();
         
     }
@@ -106,16 +104,24 @@ public class BtconActivity extends Activity {
                }
                
                String targetAddr=btDev.getAddress();
-               String FilePath=SD_PATH+"/1ktone.wav";
-               File fp=new File(FilePath);
+               String FilePath=SD_PATH+"/PDB/she.txt";
+               
+               File fp=new File(filepath);
                boolean f =fp.exists();
 
                ContentValues cv = new ContentValues();
-               cv.put("uri", FilePath);
+               cv.put("uri", filepath);
                cv.put("destination", targetAddr);
                cv.put("direction", 0);
+               cv.put("visibility",1);
                Long ts = System.currentTimeMillis();
                cv.put("timestamp", ts);
+               
+               
+      //         i = getContentResolver().openInputStream(Uri.parse(cv.mUri)); 
+               
+               
+               
                getContentResolver().insert(Uri.parse("content://com.android.bluetooth.opp/btopp"),cv);
                
                btSocket.close();
@@ -134,6 +140,21 @@ public class BtconActivity extends Activity {
 		}	     	
 		try{
 			btsocket.connect();
+			
+			
+		       String targetAddr=btDev.getAddress();
+               String FilePath=SD_PATH+"/PDB/she.txt";
+               File fp=new File(FilePath);
+               boolean f =fp.exists();
+
+               ContentValues cv = new ContentValues();
+               cv.put("uri", FilePath);
+               cv.put("destination", targetAddr);
+               cv.put("direction", 0);
+               Long ts = System.currentTimeMillis();
+               cv.put("timestamp", ts);
+               getContentResolver().insert(Uri.parse("content://com.android.bluetooth.opp/btopp"),cv);
+               
 			btsocket.close();
 		}catch (IOException e) {
 			return false;
